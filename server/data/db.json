@@ -1,0 +1,374 @@
+{
+  "users": [
+    {
+      "name": "System Admin",
+      "email": "admin@careerguide.ai",
+      "password_hash": "$2a$10$luajo6XlZVHVhQtVngGoCegmylVsWTIJbh2gQ1IymtiYvmFJZF.26",
+      "role": "admin",
+      "phone": "9999999999",
+      "education_level": "Graduation",
+      "city": "Mumbai",
+      "marks_10th": 95,
+      "marks_12th": 92,
+      "stream": "Science",
+      "id": 1,
+      "created_at": "2026-07-30T17:31:06.029Z"
+    },
+    {
+      "name": "Rahul Sharma",
+      "email": "student@example.com",
+      "password_hash": "$2a$10$uvai9yz/OCXdx1F25J1/FOJ0sWeknmOqPHHuMujfn83fPySMoChcO",
+      "role": "student",
+      "phone": "9876543210",
+      "education_level": "12th",
+      "city": "Mumbai",
+      "marks_10th": 85,
+      "marks_12th": 82,
+      "stream": "Science (PCM)",
+      "id": 2,
+      "created_at": "2026-07-30T17:31:06.030Z"
+    },
+    {
+      "name": "bala",
+      "email": "bala@gmail.com",
+      "password_hash": "$2a$10$GGHiYMwnmbS/Yq76xNyEIeSLTiIfzHGoHdUI17ViTGmL5Vc5h8UJu",
+      "role": "student",
+      "phone": "9876543210",
+      "education_level": "12th",
+      "city": "coimbatore",
+      "marks_10th": 85,
+      "marks_12th": 82,
+      "stream": "General",
+      "id": 3,
+      "created_at": "2026-07-30T17:43:48.555Z",
+      "updated_at": "2026-07-30T17:43:52.639Z"
+    },
+    {
+      "name": "Bala krishnan",
+      "email": "admin@akalya.com",
+      "password_hash": "$2a$10$5LWptV/L2DGPE/Nb.MaUh./sjKSBHJyp6qds2QyUKGr5aNArQztrm",
+      "role": "student",
+      "phone": "09434453154",
+      "education_level": "12th",
+      "city": "coimbatore",
+      "marks_10th": 85,
+      "marks_12th": 82,
+      "stream": "General",
+      "id": 4,
+      "created_at": "2026-09-20T10:15:12.957Z"
+    }
+  ],
+  "careers": [
+    {
+      "slug": "btech-cse",
+      "title": "B.Tech Computer Science & Engineering (CSE)",
+      "category": "Computer Science & IT",
+      "overview": "Core engineering discipline covering software engineering, algorithms, database systems, networking, and computing theory.",
+      "required_education": "12th Science (PCM)",
+      "eligibility": "12th Pass with Physics, Chemistry, Maths (Min 60%) + JEE / Entrance score",
+      "course_duration": "4 Years",
+      "entrance_exams": [
+        "JEE Main",
+        "JEE Advanced",
+        "BITSAT",
+        "VITEEE"
+      ],
+      "important_skills": [
+        "Data Structures",
+        "Algorithms",
+        "Full-Stack Web Dev",
+        "System Design"
+      ],
+      "favourite_subjects": [
+        "Mathematics",
+        "Computer Science"
+      ],
+      "career_opportunities": [
+        "Software Engineer",
+        "Systems Architect",
+        "Cloud Engineer",
+        "Backend Developer"
+      ],
+      "salary_fresher": "₹6 - ₹18 LPA",
+      "salary_experienced": "₹20 - ₹50+ LPA",
+      "future_scope": "Continuous high global demand across tech giants, startups, and enterprises.",
+      "popularity_score": 99,
+      "id": 1,
+      "created_at": "2026-07-30T17:31:06.031Z"
+    },
+    {
+      "slug": "mbbs",
+      "title": "MBBS (Bachelor of Medicine, Bachelor of Surgery)",
+      "category": "Medical & Healthcare",
+      "overview": "Primary professional undergraduate medical degree for aspiring doctors, training in clinical diagnosis, surgery, and pharmacology.",
+      "required_education": "12th Science (PCB)",
+      "eligibility": "12th Pass with Physics, Chemistry & Biology (Min 50%) + NEET UG score",
+      "course_duration": "5.5 Years",
+      "entrance_exams": [
+        "NEET UG"
+      ],
+      "important_skills": [
+        "Diagnosis",
+        "Patient Care",
+        "Empathy",
+        "Anatomy"
+      ],
+      "favourite_subjects": [
+        "Biology",
+        "Chemistry"
+      ],
+      "career_opportunities": [
+        "General Physician",
+        "Surgeon",
+        "Medical Officer",
+        "Clinical Researcher"
+      ],
+      "salary_fresher": "₹6 - ₹10 LPA",
+      "salary_experienced": "₹15 - ₹35+ LPA",
+      "future_scope": "High demand globally with opportunities for MD/MS specialization.",
+      "popularity_score": 98,
+      "id": 2,
+      "created_at": "2026-07-30T17:31:06.032Z"
+    },
+    {
+      "slug": "ai-ml-engineer",
+      "title": "Artificial Intelligence & Machine Learning (AI/ML)",
+      "category": "Computer Science & IT",
+      "overview": "Specialization in building autonomous systems, neural networks, computer vision, and large language models (LLMs).",
+      "required_education": "12th Science (PCM)",
+      "eligibility": "12th Pass with PCM (Min 60%) + Engineering Entrance",
+      "course_duration": "4 Years",
+      "entrance_exams": [
+        "JEE Main",
+        "BITSAT",
+        "VITEEE"
+      ],
+      "important_skills": [
+        "Python",
+        "TensorFlow / PyTorch",
+        "Linear Algebra",
+        "Deep Learning"
+      ],
+      "favourite_subjects": [
+        "Mathematics",
+        "Statistics",
+        "Computer Science"
+      ],
+      "career_opportunities": [
+        "AI Research Scientist",
+        "ML Engineer",
+        "NLP Engineer"
+      ],
+      "salary_fresher": "₹8 - ₹22 LPA",
+      "salary_experienced": "₹25 - ₹65+ LPA",
+      "future_scope": "Top priority field globally powering the AI revolution.",
+      "popularity_score": 97,
+      "id": 3,
+      "created_at": "2026-07-30T17:31:06.032Z"
+    },
+    {
+      "slug": "chartered-accountant",
+      "title": "Chartered Accountant (CA)",
+      "category": "Commerce & Finance",
+      "overview": "Premier accounting qualification managing financial auditing, taxation, corporate finance, and governance.",
+      "required_education": "12th (Commerce or Any)",
+      "eligibility": "12th Pass (Min 50%) + CA Foundation Clearance",
+      "course_duration": "4.5 Years",
+      "entrance_exams": [
+        "CA Foundation",
+        "CA Intermediate",
+        "CA Final"
+      ],
+      "important_skills": [
+        "Auditing",
+        "Taxation (GST)",
+        "Financial Analysis",
+        "Corporate Law"
+      ],
+      "favourite_subjects": [
+        "Accountancy",
+        "Economics",
+        "Mathematics"
+      ],
+      "career_opportunities": [
+        "Chartered Accountant",
+        "Statutory Auditor",
+        "Tax Consultant",
+        "CFO"
+      ],
+      "salary_fresher": "₹8 - ₹15 LPA",
+      "salary_experienced": "₹20 - ₹50+ LPA",
+      "future_scope": "Indispensable in corporate compliance and financial management.",
+      "popularity_score": 94,
+      "id": 4,
+      "created_at": "2026-07-30T17:31:06.033Z"
+    },
+    {
+      "slug": "ui-ux-designer",
+      "title": "UI/UX Designer & Product Designer",
+      "category": "Design & Creative",
+      "overview": "Focuses on user research, wireframing, interactive prototyping, and designing digital product interfaces.",
+      "required_education": "12th (Any Stream) or B.Des",
+      "eligibility": "12th Pass + Portfolio / NID or UCEED Entrance",
+      "course_duration": "4 Years",
+      "entrance_exams": [
+        "UCEED",
+        "NID DAT",
+        "NIFT Entrance"
+      ],
+      "important_skills": [
+        "Figma / Sketch",
+        "User Research",
+        "Wireframing",
+        "Visual Design"
+      ],
+      "favourite_subjects": [
+        "Design",
+        "Psychology",
+        "Computer Science"
+      ],
+      "career_opportunities": [
+        "UI/UX Designer",
+        "Product Designer",
+        "User Researcher"
+      ],
+      "salary_fresher": "₹5 - ₹10 LPA",
+      "salary_experienced": "₹15 - ₹32 LPA",
+      "future_scope": "Critical role for every software product, app, and web startup.",
+      "popularity_score": 93,
+      "id": 5,
+      "created_at": "2026-07-30T17:31:06.033Z"
+    },
+    {
+      "slug": "civil-services-ias",
+      "title": "Civil Services Officer (IAS / IPS / IFS)",
+      "category": "Government Services",
+      "overview": "Prestigious administrative and policing leadership roles serving the nation through public policy execution.",
+      "required_education": "Graduation (Any Stream)",
+      "eligibility": "Bachelor's Degree in any discipline + Age 21 to 32 years",
+      "course_duration": "1 - 2 Years Prep",
+      "entrance_exams": [
+        "UPSC Civil Services Examination (Prelims, Mains, Interview)"
+      ],
+      "important_skills": [
+        "Administrative Governance",
+        "Policy Formulation",
+        "Public Communication"
+      ],
+      "favourite_subjects": [
+        "Polity",
+        "History",
+        "Economics"
+      ],
+      "career_opportunities": [
+        "District Magistrate (IAS)",
+        "Superintendent of Police (IPS)",
+        "Diplomat (IFS)"
+      ],
+      "salary_fresher": "₹8 - ₹12 LPA + Perks",
+      "salary_experienced": "₹18 - ₹30 LPA + Perks",
+      "future_scope": "Highest social impact and administrative governance roles in India.",
+      "popularity_score": 98,
+      "id": 6,
+      "created_at": "2026-07-30T17:31:06.034Z"
+    }
+  ],
+  "colleges": [
+    {
+      "name": "IIT Bombay",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "type": "Government",
+      "courses": [
+        "B.Tech CSE",
+        "B.Tech AI"
+      ],
+      "fees": "₹2.5 Lakhs / yr",
+      "rating": 4.9,
+      "website": "https://www.iitb.ac.in",
+      "id": 1,
+      "created_at": "2026-07-30T17:31:06.034Z"
+    },
+    {
+      "name": "AIIMS New Delhi",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "type": "Government",
+      "courses": [
+        "MBBS",
+        "B.Sc Nursing"
+      ],
+      "fees": "₹1,628 / yr",
+      "rating": 5,
+      "website": "https://www.aiims.edu",
+      "id": 2,
+      "created_at": "2026-07-30T17:31:06.036Z"
+    },
+    {
+      "name": "NLSIU Bengaluru",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "type": "Government",
+      "courses": [
+        "BA LLB (Hons)",
+        "LLM"
+      ],
+      "fees": "₹3.5 Lakhs / yr",
+      "rating": 4.9,
+      "website": "https://www.nls.ac.in",
+      "id": 3,
+      "created_at": "2026-07-30T17:31:06.036Z"
+    },
+    {
+      "name": "BITS Pilani",
+      "city": "Pilani",
+      "state": "Rajasthan",
+      "type": "Private",
+      "courses": [
+        "B.E. Computer Science",
+        "B.Pharm"
+      ],
+      "fees": "₹5.5 Lakhs / yr",
+      "rating": 4.8,
+      "website": "https://www.bits-pilani.ac.in",
+      "id": 4,
+      "created_at": "2026-07-30T17:31:06.037Z"
+    },
+    {
+      "name": "NID Ahmedabad",
+      "city": "Ahmedabad",
+      "state": "Gujarat",
+      "type": "Government",
+      "courses": [
+        "B.Des UI/UX"
+      ],
+      "fees": "₹3.8 Lakhs / yr",
+      "rating": 4.8,
+      "website": "https://www.nid.edu",
+      "id": 5,
+      "created_at": "2026-07-30T17:31:06.038Z"
+    }
+  ],
+  "assessments": [
+    {
+      "user_id": 2,
+      "selected_category": "Computer Science & IT",
+      "top_career": "B.Tech Computer Science & Engineering (CSE)",
+      "match_score": 98,
+      "responses_json": "{\"step1\":\"Math\",\"step2\":\"CS\"}",
+      "breakdown_json": "{\"topCareer\":\"B.Tech Computer Science & Engineering (CSE)\",\"topScore\":98,\"category\":\"Computer Science & IT\",\"allMatches\":[{\"careerId\":1,\"title\":\"B.Tech Computer Science & Engineering (CSE)\",\"category\":\"Computer Science & IT\",\"matchScore\":98,\"overview\":\"Core engineering discipline covering software engineering, algorithms, database systems, networking, and computing theory.\",\"fresherSalary\":\"₹6 - ₹18 LPA\",\"courseDuration\":\"4 Years\"},{\"careerId\":3,\"title\":\"Artificial Intelligence & Machine Learning (AI/ML)\",\"category\":\"Computer Science & IT\",\"matchScore\":98,\"overview\":\"Specialization in building autonomous systems, neural networks, computer vision, and large language models (LLMs).\",\"fresherSalary\":\"₹8 - ₹22 LPA\",\"courseDuration\":\"4 Years\"},{\"careerId\":2,\"title\":\"MBBS (Bachelor of Medicine, Bachelor of Surgery)\",\"category\":\"Medical & Healthcare\",\"matchScore\":80,\"overview\":\"Primary professional undergraduate medical degree for aspiring doctors, training in clinical diagnosis, surgery, and pharmacology.\",\"fresherSalary\":\"₹6 - ₹10 LPA\",\"courseDuration\":\"5.5 Years\"},{\"careerId\":4,\"title\":\"Chartered Accountant (CA)\",\"category\":\"Commerce & Finance\",\"matchScore\":80,\"overview\":\"Premier accounting qualification managing financial auditing, taxation, corporate finance, and governance.\",\"fresherSalary\":\"₹8 - ₹15 LPA\",\"courseDuration\":\"4.5 Years\"},{\"careerId\":5,\"title\":\"UI/UX Designer & Product Designer\",\"category\":\"Design & Creative\",\"matchScore\":80,\"overview\":\"Focuses on user research, wireframing, interactive prototyping, and designing digital product interfaces.\",\"fresherSalary\":\"₹5 - ₹10 LPA\",\"courseDuration\":\"4 Years\"},{\"careerId\":6,\"title\":\"Civil Services Officer (IAS / IPS / IFS)\",\"category\":\"Government Services\",\"matchScore\":80,\"overview\":\"Prestigious administrative and policing leadership roles serving the nation through public policy execution.\",\"fresherSalary\":\"₹8 - ₹12 LPA + Perks\",\"courseDuration\":\"1 - 2 Years Prep\"}]}",
+      "id": 1,
+      "created_at": "2026-07-30T17:35:37.854Z"
+    },
+    {
+      "user_id": 4,
+      "selected_category": "Computer Science & IT",
+      "top_career": "B.Tech Computer Science & Engineering (CSE)",
+      "match_score": 98,
+      "responses_json": "{\"category\":\"Computer Science & IT\",\"step\":6}",
+      "breakdown_json": "{\"topCareer\":\"B.Tech Computer Science & Engineering (CSE)\",\"topScore\":98,\"category\":\"Computer Science & IT\",\"allMatches\":[{\"careerId\":1,\"title\":\"B.Tech Computer Science & Engineering (CSE)\",\"category\":\"Computer Science & IT\",\"matchScore\":98,\"overview\":\"Core engineering discipline covering software engineering, algorithms, database systems, networking, and computing theory.\",\"fresherSalary\":\"₹6 - ₹18 LPA\",\"courseDuration\":\"4 Years\"},{\"careerId\":3,\"title\":\"Artificial Intelligence & Machine Learning (AI/ML)\",\"category\":\"Computer Science & IT\",\"matchScore\":98,\"overview\":\"Specialization in building autonomous systems, neural networks, computer vision, and large language models (LLMs).\",\"fresherSalary\":\"₹8 - ₹22 LPA\",\"courseDuration\":\"4 Years\"},{\"careerId\":2,\"title\":\"MBBS (Bachelor of Medicine, Bachelor of Surgery)\",\"category\":\"Medical & Healthcare\",\"matchScore\":80,\"overview\":\"Primary professional undergraduate medical degree for aspiring doctors, training in clinical diagnosis, surgery, and pharmacology.\",\"fresherSalary\":\"₹6 - ₹10 LPA\",\"courseDuration\":\"5.5 Years\"},{\"careerId\":4,\"title\":\"Chartered Accountant (CA)\",\"category\":\"Commerce & Finance\",\"matchScore\":80,\"overview\":\"Premier accounting qualification managing financial auditing, taxation, corporate finance, and governance.\",\"fresherSalary\":\"₹8 - ₹15 LPA\",\"courseDuration\":\"4.5 Years\"},{\"careerId\":5,\"title\":\"UI/UX Designer & Product Designer\",\"category\":\"Design & Creative\",\"matchScore\":80,\"overview\":\"Focuses on user research, wireframing, interactive prototyping, and designing digital product interfaces.\",\"fresherSalary\":\"₹5 - ₹10 LPA\",\"courseDuration\":\"4 Years\"},{\"careerId\":6,\"title\":\"Civil Services Officer (IAS / IPS / IFS)\",\"category\":\"Government Services\",\"matchScore\":80,\"overview\":\"Prestigious administrative and policing leadership roles serving the nation through public policy execution.\",\"fresherSalary\":\"₹8 - ₹12 LPA + Perks\",\"courseDuration\":\"1 - 2 Years Prep\"}]}",
+      "id": 2,
+      "created_at": "2026-09-20T10:16:22.283Z"
+    }
+  ]
+}

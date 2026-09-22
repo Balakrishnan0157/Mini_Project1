@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareerGuide AI — Intelligent Career Guidance System</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- React & ReactDOM UMD -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+  <!-- Babel Compiler Standalone -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f6ff',
+              100: '#e0edff',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #2563eb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #2563eb 100%);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .liquid-glass {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.35) 100%);
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 12px 40px -10px rgba(2, 132, 199, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.95), inset 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #printable-report,
+      #printable-report * {
+        visibility: visible;
+      }
+
+      #printable-report {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-sky-100 via-sky-50 to-blue-100 text-slate-900 font-sans antialiased selection:bg-sky-500 selection:text-white min-h-screen">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Backend REST API Base URL
+    const API_BASE = 'http://localhost:5000/api';
+
+    // API Helper
+    async function apiCall(endpoint, method = 'GET', body = null) {
+      const token = localStorage.getItem('cg_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const options = { method, headers };
+      if (body) options.body = JSON.stringify(body);
+
+      try {
+        const res = await fetch(`${API_BASE}${endpoint}`, options);
+        const data = await res.json();
+        return data;
+      } catch (err) {
+        console.error(`API Error on ${endpoint}:`, err);
+        return { success: false, message: 'Server connection error. Ensure backend server is running on port 5000.' };
+      }
+    }
+
+    // Default Seed Data Fallbacks
+    const FALLBACK_CAREERS = [
+      {
+        id: 1,
+        title: "B.Tech Computer Science & Engineering (CSE)",
+        slug: "btech-cse",
+        category: "Computer Science & IT",
+        overview: "Core engineering discipline covering software engineering, algorithms, database systems, networking, and computing theory.",
+        required_education: "12th Science (PCM)",
+        eligibility: "12th Pass with Physics, Chemistry, Maths (Min 60%) + JEE / Entrance score",
+        course_duration: "4 Years",
+        entrance_exams: ["JEE Main", "JEE Advanced", "BITSAT", "VITEEE"],
+        important_skills: ["Data Structures", "Algorithms", "Full-Stack Web Dev", "System Design"],
+        favourite_subjects: ["Mathematics", "Computer Science"],
+        career_opportunities: ["Software Engineer", "Systems Architect", "Cloud Engineer", "Backend Developer"],
+        salary_fresher: "₹6 - ₹18 LPA",
+        salary_experienced: "₹20 - ₹50+ LPA",
+        future_scope: "Continuous high global demand across tech giants, startups, and enterprises.",
+        popularity_score: 99
+      },
+      {
+        id: 2,
+        title: "MBBS (Bachelor of Medicine, Bachelor of Surgery)",
+        slug: "mbbs",
+        category: "Medical & Healthcare",
+        overview: "Primary professional undergraduate medical degree for aspiring doctors, training in clinical diagnosis, surgery, and pharmacology.",
+        required_education: "12th Science (PCB)",
+        eligibility: "12th Pass with Physics, Chemistry & Biology (Min 50%) + NEET UG score",
+        course_duration: "5.5 Years",
+        entrance_exams: ["NEET UG"],
+        important_skills: ["Diagnosis", "Patient Care", "Empathy", "Anatomy"],
+        favourite_subjects: ["Biology", "Chemistry"],
+        career_opportunities: ["General Physician", "Surgeon", "Medical Officer", "Clinical Researcher"],
+        salary_fresher: "₹6 - ₹10 LPA",
+        salary_experienced: "₹15 - ₹35+ LPA",
+        future_scope: "High demand globally with opportunities for MD/MS specialization.",
+        popularity_score: 98
+      }
+    ];
+
+    // Main Master App Component
+    function App() {
+      const [view, setView] = useState('landing');
+      const [user, setUser] = useState(() => {
+        const saved = localStorage.getItem('cg_user');
+        return saved ? JSON.parse(saved) : null;
+      });
+      const [selectedCareer, setSelectedCareer] = useState(FALLBACK_CAREERS[0]);
+      const [assessmentResult, setAssessmentResult] = useState(null);
+      const [backendOnline, setBackendOnline] = useState(false);
+
+      // Verify connection to Backend REST API on mount
+      useEffect(() => {
+        apiCall('/health').then(res => {
+          if (res && res.status === 'OK') {
+            setBackendOnline(true);
+            // Fetch current authenticated user profile if token present
+            if (localStorage.getItem('cg_token')) {
+              apiCall('/auth/me').then(meRes => {
+                if (meRes.success && meRes.user) {
+                  setUser(meRes.user);
+                  localStorage.setItem('cg_user', JSON.stringify(meRes.user));
+                }
+              });
+            }
+          }
+        });
+      }, []);
+
+      const login = (userData, token) => {
+        setUser(userData);
+        localStorage.setItem('cg_user', JSON.stringify(userData));
+        if (token) localStorage.setItem('cg_token', token);
+        if (userData.role === 'admin') setView('admin');
+        else setView('dashboard');
+      };
+
+      const logout = () => {
+        setUser(null);
+        localStorage.removeItem('cg_user');
+        localStorage.removeItem('cg_token');
+        setView('landing');
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          {/* Header Navbar */}
+          <header className="sticky top-0 z-40 bg-black/95 backdrop-blur-xl border-b border-slate-800 shadow-xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-20">
+                <div onClick={() => setView('landing')} className="flex items-center gap-3 cursor-pointer">
+                  <div className="w-11 h-11 rounded-2xl gradient-bg flex items-center justify-center text-white shadow-lg shadow-sky-500/30">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                  </div>
+                  <div>
+                    <span className="text-xl font-extrabold tracking-tight text-white flex items-center gap-1">
+                      CareerGuide <span className="gradient-text">AI</span>
+                    </span>
+                    <span className="block text-[10px] uppercase font-bold tracking-widest text-sky-400">Intelligent Platform</span>
+                  </div>
+                </div>
+
+                <nav className="hidden md:flex items-center gap-6 text-sm font-semibold">
+                  <button onClick={() => setView('landing')} className={`hover:text-sky-400 ${view === 'landing' ? 'text-sky-400 font-bold' : 'text-slate-300'}`}>Home</button>
+                  <button onClick={() => setView('explorer')} className={`hover:text-sky-400 ${view === 'explorer' ? 'text-sky-400 font-bold' : 'text-slate-300'}`}>Career Explorer</button>
+                  {user && <button onClick={() => setView(user.role === 'admin' ? 'admin' : 'dashboard')} className={`hover:text-sky-400 ${view === 'dashboard' || view === 'admin' ? 'text-sky-400 font-bold' : 'text-slate-300'}`}>Dashboard</button>}
+                </nav>
+
+                <div className="flex items-center gap-3">
+                  {user ? (
+                    <div className="flex items-center gap-3">
+                      <button onClick={() => setView(user.role === 'admin' ? 'admin' : 'dashboard')} className="px-4 py-2 rounded-xl gradient-bg text-white font-bold text-xs shadow-md shadow-sky-500/20">
+                        {user.name} ({user.role})
+                      </button>
+                      <button onClick={logout} className="text-xs text-rose-400 font-bold hover:underline">Logout</button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setView('login')} className="px-4 py-2 rounded-xl bg-slate-800 font-bold text-xs text-slate-200 hover:bg-slate-700">Login</button>
+                      <button onClick={() => setView('register')} className="px-5 py-2.5 rounded-xl gradient-bg text-white font-bold text-xs shadow-md shadow-sky-500/20">Get Started</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Dynamic Body Views */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {view === 'landing' && <LandingView setView={setView} user={user} />}
+            {view === 'login' && <LoginView login={login} setView={setView} />}
+            {view === 'register' && <RegisterView login={login} setView={setView} />}
+            {view === 'dashboard' && <DashboardView user={user} setView={setView} result={assessmentResult} />}
+            {view === 'profile' && <ProfileView user={user} setUser={setUser} setView={setView} />}
+            {view === 'assessment' && <AssessmentView setView={setView} setAssessmentResult={setAssessmentResult} />}
+            {view === 'recommendations' && <RecommendationsView result={assessmentResult} setView={setView} setSelectedCareer={setSelectedCareer} />}
+            {view === 'explorer' && <ExplorerView setSelectedCareer={setSelectedCareer} setView={setView} />}
+            {view === 'detail' && <DetailView career={selectedCareer} setView={setView} />}
+            {view === 'roadmap' && <RoadmapView career={selectedCareer} />}
+            {view === 'reports' && <ReportsView user={user} result={assessmentResult} />}
+            {view === 'admin' && <AdminView setView={setView} />}
+          </main>
+
+          {/* Footer */}
+          <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 text-xs">
+            <div className="max-w-7xl mx-auto px-4 text-center">
+              <p className="font-bold text-slate-200">© 2026 Intelligent Career Guidance System ("CareerGuide AI"). All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    // 1. Landing View
+    function LandingView({ setView, user }) {
+      return (
+        <div className="space-y-16 py-6">
+          <div className="text-center max-w-3xl mx-auto space-y-6">
+            <span className="inline-block px-5 py-2 rounded-full liquid-glass text-sky-900 font-bold text-xs shadow-md">
+              ✨ Intelligent Career Guidance System
+            </span>
+            <div className="liquid-glass p-8 sm:p-12 rounded-3xl shadow-xl">
+              <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight">
+                Discover the Career That <span className="gradient-text">Fits You</span>
+              </h1>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <button onClick={() => setView(user ? 'assessment' : 'register')} className="w-full sm:w-auto px-8 py-4 rounded-2xl gradient-bg text-white font-bold text-base shadow-xl shadow-blue-500/25 hover:opacity-95">
+                Take Career Assessment
+              </button>
+              <button onClick={() => setView('explorer')} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white border border-slate-200 font-bold text-base text-slate-800 shadow-md hover:bg-slate-50">
+                Explore Careers
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
+              <h3 className="font-extrabold text-slate-900 text-lg">Scientific Scoring</h3>
+              <p className="text-xs text-slate-500">6-Factor weighted compatibility score combining 10th & 12th marks, aptitude, and interests.</p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
+              <h3 className="font-extrabold text-slate-900 text-lg">Verified Pathways</h3>
+              <p className="text-xs text-slate-500">Comprehensive profile data for streams after 10th, 12th, and Graduation.</p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
+              <h3 className="font-extrabold text-slate-900 text-lg">Personalized Roadmaps</h3>
+              <p className="text-xs text-slate-500">Clear step-by-step guidance from entrance exams up to senior career roles.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 2. Login View (Connected to Backend REST API)
+    function LoginView({ login, setView }) {
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState('');
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        const res = await apiCall('/auth/login', 'POST', { email, password });
+        setLoading(false);
+
+        if (res.success) {
+          login(res.user, res.token);
+        } else {
+          setError(res.message || 'Login failed');
+        }
+      };
+
+      return (
+        <div className="max-w-md mx-auto bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6 my-8">
+          <div className="text-center space-y-1">
+            <h2 className="text-2xl font-black text-slate-900">Account Login</h2>
+            <p className="text-xs text-slate-500">Access student portal & career assessment</p>
+          </div>
+
+          {error && (
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-bold">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+            <div>
+              <label className="block font-bold text-slate-700 uppercase mb-1">Email</label>
+              <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="student@example.com" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium" />
+            </div>
+            <div>
+              <label className="block font-bold text-slate-700 uppercase mb-1">Password</label>
+              <input type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium" />
+            </div>
+            <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl font-bold text-white text-sm gradient-bg shadow-md disabled:opacity-50">
+              {loading ? 'Authenticating...' : 'Sign In to Account'}
+            </button>
+          </form>
+
+          <div className="space-y-2 text-center text-xs pt-2 border-t border-slate-100">
+            <div className="font-bold text-slate-500">Pre-configured Demo Accounts:</div>
+            <div className="flex justify-center gap-3">
+              <button type="button" onClick={() => { setEmail('student@example.com'); setPassword('Student@12345'); }} className="text-blue-600 font-bold underline">
+                Fill Student Demo
+              </button>
+              <button type="button" onClick={() => { setEmail('admin@careerguide.ai'); setPassword('Admin@12345'); }} className="text-purple-600 font-bold underline">
+                Fill Admin Demo
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 3. Register View (Connected to Backend REST API)
+    function RegisterView({ login, setView }) {
+      const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '', educationLevel: '12th', city: '' });
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState('');
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        const res = await apiCall('/auth/register', 'POST', formData);
+        setLoading(false);
+
+        if (res.success) {
+          login(res.user, res.token);
+        } else {
+          setError(res.message || 'Registration failed');
+        }
+      };
+
+      return (
+        <div className="max-w-md mx-auto bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6 my-8">
+          <div className="text-center space-y-1">
+            <h2 className="text-2xl font-black text-slate-900">Student Registration</h2>
+            <p className="text-xs text-slate-500">Create your backend career guidance profile</p>
+          </div>
+
+          {error && (
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-bold">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+            <input type="text" required placeholder="Full Name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" />
+            <input type="email" required placeholder="Email Address" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" />
+            <input type="password" required placeholder="Password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" />
+            <input type="tel" placeholder="Phone Number" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" />
+            <select value={formData.educationLevel} onChange={e => setFormData({ ...formData, educationLevel: e.target.value })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold">
+              <option value="10th">Class 10th</option>
+              <option value="12th">Class 12th</option>
+              <option value="Diploma">Diploma</option>
+              <option value="Graduation">Graduation</option>
+            </select>
+            <input type="text" placeholder="City / Location" value={formData.city} onChange={e => setFormData({ ...formData, city: e.target.value })} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" />
+
+            <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl font-bold text-white text-sm gradient-bg shadow-md disabled:opacity-50">
+              {loading ? 'Creating Profile...' : 'Complete Registration'}
+            </button>
+          </form>
+        </div>
+      );
+    }
+
+    // 4. Dashboard View
+    function DashboardView({ user, setView, result }) {
+      return (
+        <div className="space-y-8">
+          <div className="gradient-bg rounded-3xl p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-2">
+              <span className="text-xs uppercase font-extrabold text-blue-200 tracking-wider">Student Portal</span>
+              <h2 className="text-3xl font-black">Welcome back, {user?.name || 'Student'}! 👋</h2>
+              <p className="text-xs text-blue-100">Take your REST API 6-step assessment to calculate top recommendations.</p>
+            </div>
+            <button onClick={() => setView('assessment')} className="px-6 py-3 rounded-2xl bg-white text-blue-700 font-bold text-sm shadow-md hover:bg-blue-50">
+              Take Career Assessment
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <button onClick={() => setView('profile')} className="bg-white p-5 rounded-2xl border border-slate-200 text-left hover:border-blue-500 transition-all">
+              <span className="text-xs font-bold text-blue-600 uppercase block mb-1">My Profile</span>
+              <h4 className="font-extrabold text-slate-900 text-base">Academic Marks</h4>
+              <p className="text-xs text-slate-500 mt-1">10th: {user?.marks_10th || 85}% | 12th: {user?.marks_12th || 82}%</p>
+            </button>
+            <button onClick={() => setView('assessment')} className="bg-white p-5 rounded-2xl border border-slate-200 text-left hover:border-blue-500 transition-all">
+              <span className="text-xs font-bold text-purple-600 uppercase block mb-1">Assessment</span>
+              <h4 className="font-extrabold text-slate-900 text-base">API Scoring</h4>
+              <p className="text-xs text-slate-500 mt-1">Evaluate skills & aptitude</p>
+            </button>
+            <button onClick={() => setView('recommendations')} className="bg-white p-5 rounded-2xl border border-slate-200 text-left hover:border-blue-500 transition-all">
+              <span className="text-xs font-bold text-emerald-600 uppercase block mb-1">Recommendations</span>
+              <h4 className="font-extrabold text-slate-900 text-base">Match Results</h4>
+              <p className="text-xs text-slate-500 mt-1">View top career pathways</p>
+            </button>
+            <button onClick={() => setView('reports')} className="bg-white p-5 rounded-2xl border border-slate-200 text-left hover:border-blue-500 transition-all">
+              <span className="text-xs font-bold text-amber-600 uppercase block mb-1">Reports</span>
+              <h4 className="font-extrabold text-slate-900 text-base">PDF & Print</h4>
+              <p className="text-xs text-slate-500 mt-1">Download analysis report</p>
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // 5. Profile View (Connected to Backend PUT /api/auth/profile)
+    function ProfileView({ user, setUser, setView }) {
+      const [marks10, setMarks10] = useState(user?.marks_10th || 85);
+      const [marks12, setMarks12] = useState(user?.marks_12th || 82);
+      const [city, setCity] = useState(user?.city || 'Mumbai');
+      const [stream, setStream] = useState(user?.stream || 'Science (PCM)');
+      const [saving, setSaving] = useState(false);
+      const [msg, setMsg] = useState('');
+
+      const handleSave = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        setMsg('');
+
+        const res = await apiCall('/auth/profile', 'PUT', {
+          marks10th: marks10,
+          marks12th: marks12,
+          city,
+          stream
+        });
+        setSaving(false);
+
+        if (res.success && res.user) {
+          setUser(res.user);
+          localStorage.setItem('cg_user', JSON.stringify(res.user));
+          setMsg('Profile updated in backend successfully!');
+        } else {
+          setMsg(res.message || 'Failed to update profile');
+        }
+      };
+
+      return (
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl border border-slate-200 space-y-6">
+          <h2 className="text-2xl font-black text-slate-900">Student Profile Module</h2>
+
+          {msg && (
+            <div className={`p-3 rounded-xl text-xs font-bold ${msg.includes('success') ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700'}`}>
+              {msg}
+            </div>
+          )}
+
+          <form onSubmit={handleSave} className="space-y-4 text-xs">
+            <div>
+              <label className="block font-bold text-slate-700 uppercase mb-1">Full Name</label>
+              <input type="text" disabled value={user?.name || 'Student'} className="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl font-bold" />
+            </div>
+            <div>
+              <label className="block font-bold text-slate-700 uppercase mb-1">Email Address</label>
+              <input type="text" disabled value={user?.email || ''} className="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl font-bold" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block font-bold text-slate-700 uppercase mb-1">10th Percentage (%)</label>
+                <input type="number" step="0.1" value={marks10} onChange={e => setMarks10(e.target.value)} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label className="block font-bold text-slate-700 uppercase mb-1">12th Percentage (%)</label>
+                <input type="number" step="0.1" value={marks12} onChange={e => setMarks12(e.target.value)} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block font-bold text-slate-700 uppercase mb-1">Academic Stream</label>
+                <input type="text" value={stream} onChange={e => setStream(e.target.value)} placeholder="e.g. Science (PCM)" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label className="block font-bold text-slate-700 uppercase mb-1">City / Location</label>
+                <input type="text" value={city} onChange={e => setCity(e.target.value)} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+
+            <div className="pt-2 flex gap-3">
+              <button type="submit" disabled={saving} className="px-6 py-3 rounded-xl gradient-bg text-white font-bold text-sm shadow-md disabled:opacity-50">
+                {saving ? 'Saving...' : 'Save Profile Changes'}
+              </button>
+              <button type="button" onClick={() => setView('dashboard')} className="px-6 py-3 rounded-xl bg-slate-100 font-bold text-xs text-slate-700">
+                Back to Dashboard
+              </button>
+            </div>
+          </form>
+        </div>
+      );
+    }
+
+    // 6. Assessment View (Connected to Backend POST /api/assessment/submit)
+    function AssessmentView({ setView, setAssessmentResult }) {
+      const [step, setStep] = useState(1);
+      const [selectedCategory, setSelectedCategory] = useState("Computer Science & IT");
+      const [submitting, setSubmitting] = useState(false);
+
+      const handleNext = async () => {
+        if (step < 6) {
+          setStep(step + 1);
+        } else {
+          setSubmitting(true);
+          const res = await apiCall('/assessment/submit', 'POST', {
+            category: selectedCategory,
+            answers: { category: selectedCategory, step }
+          });
+          setSubmitting(false);
+
+          if (res.success && res.result) {
+            setAssessmentResult(res.result);
+            setView('recommendations');
+          } else {
+            // Fallback for demonstration
+            setAssessmentResult({
+              topCareer: selectedCategory === "Medical & Healthcare" ? "MBBS (Bachelor of Medicine, Bachelor of Surgery)" : "B.Tech Computer Science & Engineering (CSE)",
+              matchScore: 96,
+              category: selectedCategory,
+              matches: FALLBACK_CAREERS
+            });
+            setView('recommendations');
+          }
+        }
+      };
+
+      return (
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl border border-slate-200 space-y-6 shadow-lg">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <span className="text-xs uppercase font-extrabold text-blue-600">Step {step} of 6</span>
+            <span className="text-xs font-bold text-slate-500">{Math.round((step / 6) * 100)}% Completed</span>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-slate-900">
+              {step === 1 && "Academic Profile: Select your primary domain of interest"}
+              {step === 2 && "Interest Assessment: Which stream excites you the most?"}
+              {step === 3 && "Skill Assessment: Select your core problem solving style"}
+              {step === 4 && "Aptitude Evaluation: Logical analysis preference"}
+              {step === 5 && "Personality Type: Preferred work environment and team structure"}
+              {step === 6 && "Career Goal: Confirm target career sector"}
+            </h3>
+
+            <div className="space-y-2 text-xs">
+              {["Computer Science & IT", "Medical & Healthcare", "Commerce & Finance", "Design & Creative", "Law", "Government Services"].map(cat => (
+                <div key={cat} onClick={() => setSelectedCategory(cat)} className={`p-4 rounded-2xl border font-bold cursor-pointer transition-all ${selectedCategory === cat ? 'bg-blue-50 border-blue-600 text-blue-900 shadow-sm' : 'bg-slate-50 border-slate-200 hover:border-slate-300'}`}>
+                  {cat}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+            <button disabled={step === 1} onClick={() => setStep(step - 1)} className="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs disabled:opacity-50">
+              Previous
+            </button>
+            <button onClick={handleNext} disabled={submitting} className="px-6 py-2.5 rounded-xl gradient-bg text-white font-bold text-xs shadow-md disabled:opacity-50">
+              {submitting ? 'Evaluating...' : step === 6 ? 'Submit Assessment' : 'Next Step →'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // 7. Recommendations View
+    function RecommendationsView({ result, setView, setSelectedCareer }) {
+      const [careers, setCareers] = useState([]);
+
+      useEffect(() => {
+        apiCall('/careers').then(res => {
+          if (res.success && res.careers) {
+            setCareers(res.careers);
+          } else {
+            setCareers(FALLBACK_CAREERS);
+          }
+        });
+      }, []);
+
+      const topCareerTitle = result?.topCareer || "B.Tech Computer Science & Engineering (CSE)";
+      const matchPercentage = result?.matchScore || 96;
+
+      return (
+        <div className="space-y-8">
+          <div className="bg-gradient-to-br from-slate-900 to-indigo-950 p-8 rounded-3xl text-white space-y-4 shadow-xl">
+            <span className="text-xs uppercase font-extrabold text-emerald-400">Assessment Recommendation</span>
+            <h2 className="text-3xl font-black">Your Top Recommended Pathways</h2>
+            <div className="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-bold text-white">{topCareerTitle}</h3>
+                <p className="text-xs text-slate-400">Evaluated based on academic score + 6-factor interest model</p>
+              </div>
+              <span className="text-3xl font-black text-emerald-400">{matchPercentage}% Match</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {careers.map(c => (
+              <div key={c.id} className="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-sm hover:shadow-md transition-all">
+                <span className="text-[10px] font-bold text-blue-600 uppercase bg-blue-50 px-2.5 py-1 rounded">{c.category}</span>
+                <h4 className="font-extrabold text-slate-900 text-lg">{c.title}</h4>
+                <p className="text-xs text-slate-600 line-clamp-2">{c.overview}</p>
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="font-bold text-emerald-600">{c.salary_fresher || c.averageSalaryRange?.fresher || "₹6 - ₹12 LPA"}</span>
+                  <button onClick={() => { setSelectedCareer(c); setView('detail'); }} className="font-bold text-blue-600 hover:underline">Details →</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // 8. Explorer View (Connected to Backend GET /api/careers)
+    function ExplorerView({ setSelectedCareer, setView }) {
+      const [careers, setCareers] = useState([]);
+      const [search, setSearch] = useState('');
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        const fetchCareers = async () => {
+          setLoading(true);
+          const endpoint = search ? `/careers?search=${encodeURIComponent(search)}` : '/careers';
+          const res = await apiCall(endpoint);
+          setLoading(false);
+
+          if (res.success && res.careers) {
+            setCareers(res.careers);
+          } else {
+            setCareers(FALLBACK_CAREERS);
+          }
+        };
+        fetchCareers();
+      }, [search]);
+
+      return (
+        <div className="space-y-6">
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+            <h2 className="text-3xl font-black text-slate-900">Career Explorer</h2>
+            <p className="text-xs text-slate-500">Search and explore verified career profiles.</p>
+            <input
+              type="text"
+              placeholder="Search careers, skills, or subjects..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full md:w-96 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+            />
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12 text-slate-400 font-bold text-xs">Loading careers...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {careers.map(c => (
+                <div key={c.id} className="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded inline-block">{c.category}</span>
+                    <h3 className="font-extrabold text-slate-900 text-lg">{c.title}</h3>
+                    <p className="text-xs text-slate-600">{c.overview}</p>
+                  </div>
+                  <button onClick={() => { setSelectedCareer(c); setView('detail'); }} className="w-full py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800">
+                    View Full Career Profile
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // 9. Detail View
+    function DetailView({ career, setView }) {
+      const c = career || FALLBACK_CAREERS[0];
+      const skills = Array.isArray(c.important_skills) ? c.important_skills : (c.importantSkills || []);
+      const exams = Array.isArray(c.entrance_exams) ? c.entrance_exams : (c.entranceExams || []);
+
+      return (
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-6">
+          <button onClick={() => setView('explorer')} className="text-xs font-bold text-blue-600 hover:underline">← Back to Explorer</button>
+          <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded block w-fit">{c.category}</span>
+          <h1 className="text-3xl font-black text-slate-900">{c.title}</h1>
+          <p className="text-sm text-slate-600">{c.overview}</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs pt-4 border-t border-slate-100">
+            <div className="bg-slate-50 p-4 rounded-2xl"><span className="text-slate-400 font-bold block">Duration</span><span className="font-extrabold text-slate-900 text-sm">{c.course_duration || c.courseDuration}</span></div>
+            <div className="bg-slate-50 p-4 rounded-2xl"><span className="text-slate-400 font-bold block">Fresher Salary</span><span className="font-extrabold text-emerald-600 text-sm">{c.salary_fresher || c.averageSalaryRange?.fresher}</span></div>
+            <div className="bg-slate-50 p-4 rounded-2xl"><span className="text-slate-400 font-bold block">Education</span><span className="font-extrabold text-slate-900 text-sm">{c.required_education || c.requiredEducation}</span></div>
+            <div className="bg-slate-50 p-4 rounded-2xl"><span className="text-slate-400 font-bold block">Entrance Exams</span><span className="font-extrabold text-indigo-600 text-sm">{exams.join(', ')}</span></div>
+          </div>
+
+          {skills.length > 0 && (
+            <div className="space-y-2 text-xs pt-2">
+              <h4 className="font-bold uppercase text-slate-500">Core Skills Required:</h4>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((s, idx) => (
+                  <span key={idx} className="bg-slate-100 px-3 py-1.5 rounded-xl font-bold text-slate-700">{s}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+
+
+    // 11. Roadmap View
+    function RoadmapView({ career }) {
+      const title = career?.title || "B.Tech CSE / Software Developer";
+      return (
+        <div className="max-w-2xl mx-auto space-y-6">
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-2 text-center">
+            <h2 className="text-3xl font-black text-slate-900">Career Roadmap Flowchart</h2>
+            <p className="text-xs font-bold text-blue-600">{title}</p>
+          </div>
+
+          <div className="space-y-4 text-xs">
+            {[
+              { step: 1, title: "12th Standard (Science/Commerce)", desc: "Focus on core subjects & entrance preparation." },
+              { step: 2, title: "Entrance Exam (JEE / NEET / CLAT)", desc: "Clear national or state level entrance screening." },
+              { step: 3, title: "Undergraduate Degree", desc: "Complete 3 to 4 years bachelor's degree program." },
+              { step: 4, title: "Industry Internship & Projects", desc: "Gain hands-on practical experience through internships." },
+              { step: 5, title: "Full-Time Professional Role", desc: "Start career in target industry specialization." }
+            ].map(s => (
+              <div key={s.step} className="bg-white p-6 rounded-2xl border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-indigo-600 uppercase">Step 0{s.step}</span>
+                <h4 className="font-extrabold text-slate-900 text-base">{s.title}</h4>
+                <p className="text-slate-600">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // 12. Reports View (Connected to Backend GET /api/assessment/latest)
+    function ReportsView({ user, result }) {
+      const [latest, setLatest] = useState(result);
+
+      useEffect(() => {
+        if (!latest) {
+          apiCall('/assessment/latest').then(res => {
+            if (res.success && res.assessment) {
+              setLatest({
+                topCareer: res.assessment.top_career,
+                matchScore: res.assessment.match_score,
+                category: res.assessment.selected_category
+              });
+            }
+          });
+        }
+      }, [latest]);
+
+      return (
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex items-center justify-between no-print">
+            <h2 className="text-2xl font-black text-slate-900">Assessment Evaluation Report</h2>
+            <button onClick={() => window.print()} className="px-6 py-2.5 rounded-xl gradient-bg text-white font-bold text-xs shadow-md">
+              Download / Print PDF
+            </button>
+          </div>
+
+          <div id="printable-report" className="bg-white p-10 rounded-3xl border border-slate-200 space-y-6 text-xs text-slate-900 shadow-xl">
+            <div className="flex items-center justify-between border-b-2 border-slate-900 pb-4">
+              <span className="text-2xl font-black">CareerGuide <span className="gradient-text">AI</span></span>
+              <span className="font-bold text-slate-500">Date: {new Date().toLocaleDateString()}</span>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-extrabold uppercase text-slate-500">Student Profile</h3>
+              <p className="font-bold text-sm">{user?.name || 'Rahul Sharma'} ({user?.education_level || user?.educationLevel || '12th Grade'}) — {user?.city || 'Mumbai'}</p>
+              <p className="text-slate-600 font-semibold">10th Marks: {user?.marks_10th || 85}% | 12th Marks: {user?.marks_12th || 82}%</p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-extrabold uppercase text-slate-500">REST API Recommended Career Match</h3>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <h4 className="font-extrabold text-base">{latest?.topCareer || "B.Tech Computer Science & Engineering (CSE)"}</h4>
+                <p className="text-emerald-700 font-bold">{latest?.matchScore || 96}% Calculated Compatibility Score</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 13. Admin View (Connected to Backend GET /api/admin/stats & GET /api/admin/students)
+    function AdminView({ setView }) {
+      const [stats, setStats] = useState({ totalStudents: 0, totalAssessments: 0, totalCareers: 0, totalColleges: 0 });
+      const [students, setStudents] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        const fetchAdminData = async () => {
+          setLoading(true);
+          const statsRes = await apiCall('/admin/stats');
+          if (statsRes.success && statsRes.stats) {
+            setStats(statsRes.stats);
+          }
+          const studentsRes = await apiCall('/admin/students');
+          if (studentsRes.success && studentsRes.students) {
+            setStudents(studentsRes.students);
+          }
+          setLoading(false);
+        };
+        fetchAdminData();
+      }, []);
+
+      return (
+        <div className="space-y-6">
+          <div className="bg-slate-900 text-white p-8 rounded-3xl space-y-2">
+            <h2 className="text-3xl font-black">Admin Management Console</h2>
+            <p className="text-xs text-slate-400">Live system analytics monitoring console.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+            <div className="bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 space-y-2">
+              <span className="text-slate-400 font-bold uppercase">Total Students</span>
+              <span className="text-3xl font-black block text-blue-400">{stats.totalStudents}</span>
+            </div>
+            <div className="bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 space-y-2">
+              <span className="text-slate-400 font-bold uppercase">Total Assessments</span>
+              <span className="text-3xl font-black block text-purple-400">{stats.totalAssessments}</span>
+            </div>
+            <div className="bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 space-y-2">
+              <span className="text-slate-400 font-bold uppercase">Careers in Database</span>
+              <span className="text-3xl font-black block text-amber-400">{stats.totalCareers}</span>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 space-y-4">
+            <h3 className="font-extrabold text-slate-900 text-lg">Registered Students Directory</h3>
+            {loading ? (
+              <div className="text-xs text-slate-400">Loading student records...</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 uppercase text-slate-400 font-bold">
+                    <tr>
+                      <th className="p-3">Name</th>
+                      <th className="p-3">Email</th>
+                      <th className="p-3">Education</th>
+                      <th className="p-3">10th %</th>
+                      <th className="p-3">12th %</th>
+                      <th className="p-3">Last Assessment</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {students.map(s => (
+                      <tr key={s.id} className="hover:bg-slate-50/50">
+                        <td className="p-3 font-bold text-slate-900">{s.name}</td>
+                        <td className="p-3 text-slate-600">{s.email}</td>
+                        <td className="p-3 text-slate-600">{s.education_level}</td>
+                        <td className="p-3 text-slate-600">{s.marks_10th}%</td>
+                        <td className="p-3 text-slate-600">{s.marks_12th}%</td>
+                        <td className="p-3 font-bold text-emerald-600">{s.lastAssessment}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Render Master App
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+
+</html>
